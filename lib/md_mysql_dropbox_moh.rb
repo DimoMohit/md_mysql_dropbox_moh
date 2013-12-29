@@ -2,6 +2,7 @@
 require 'mysql'
 require 'dropbox_sdk'
 class BackupData
+  attr_accessor :code,:database,:user,:pass
   def start
   	print "Database :"
   	@database = gets.chomp 
@@ -66,5 +67,3 @@ class BackupData
     @con.close if @con
   end
 end
-
-BackupData.new

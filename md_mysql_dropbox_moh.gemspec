@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "md_mysql_dropbox_moh"
-  s.version     = "0.0.1"
+  s.version     = "1.0.1"
   s.summary     = "Mysql Backup in Dropbox"
   s.date        = "2013-12-29"
   s.description = "The library opens up the Mysql database and backups it to Dropbox. 
