@@ -34,7 +34,7 @@ class BackupData
   end
   def fetch_data
     i=0
-    while i<=15
+    while i<=3
       @data = ""
       puts "#{@url}"
       puts "Fetched at: #{Time.now}"
@@ -45,8 +45,7 @@ class BackupData
           @data= "#{@data} Table : #{table}"
           res = @con.query("DESC #{table}")
           res.each_hash do |row|
-             @data =@data + row['Field']
-             
+             @data =@data + row['Field']             
           end 
           res = @con.query("SELECT * FROM #{table}")
           in_rows = res.num_rows
@@ -62,14 +61,19 @@ class BackupData
   end
   def update_dropbox
     j=0
-    while j<=3      
+    while j<=2      
       puts "linked account:", 
       File.open("temp.txt", "w") { |io| io.write(@data) }
       file = open('temp.txt')
+      #puts @client.metadata('/')['size']
+      if @client.search('/', 'database.txt', file_limit=1000, include_deleted=false).length >0
+      #if @client.get_file('/database.txt').exist? do
+        @client.file_delete('/database.txt')
+      end
       response = @client.put_file('/database.txt', file)
-      puts "uploaded:", response.inspect
+      puts "uploaded:"
       puts "Updated at: #{Time.now}"
-      sleep(50)
+      sleep(9)
       j=j+1
     end
   end
