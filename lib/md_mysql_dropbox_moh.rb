@@ -4,8 +4,6 @@ require 'dropbox_sdk'
 class BackupData
   attr_accessor :url,:database,:user,:pass
   def initialize
-  	print "Server Url :"
-  	@url = gets.chomp  
   	print "Database :"
   	@database = gets.chomp 
   	print "User Name :"
@@ -34,44 +32,27 @@ class BackupData
   end
   def fetch_data
     i=0
-    while i<=3
+    while i<3
       @data = ""
-      puts "#{@url}"
       puts "Fetched at: #{Time.now}"
-      result = @con.query("SHOW TABLES")
-  	  n_rows = result.num_rows
-  	  n_rows.times do
-          table= result.fetch_row.join("\s")
-          @data= "#{@data} Table : #{table} Fields: "
-          res = @con.query("DESC #{table}")
-          res.each_hash do |row|
-             @data =@data +" " + row['Field']             
-          end 
-          @data =@data +" Data : "
-          res = @con.query("SELECT * FROM #{table}")
-          in_rows = res.num_rows
-          in_rows.times do
-             @data = @data +" "+ res.fetch_row.join("\s")
-             
-          end
-      end
-      puts @data
-      sleep(10)
+      cmd = "mysql -u#{@user} -p#{@pass} #{@database} > #{@database}.sql"
+      puts cmd 
+      system(cmd)
+      sleep(5)
       i=i+1
     end
   end
   def update_dropbox
     j=0
-    while j<=2      
+    while j<2      
       puts "linked account:", 
-      File.open("temp.txt", "w") { |io| io.write(@data) }
-      file = open('temp.txt')
+      file = open("#{@database}.sql")
       #puts @client.metadata('/')['size']
-      if @client.search('/', 'database.txt', file_limit=1000, include_deleted=false).length >0
+      if @client.search('/', "#{@database}.sql", file_limit=1000, include_deleted=false).length >0
       #if @client.get_file('/database.txt').exist? do
-        @client.file_delete('/database.txt')
+        @client.file_delete("#{@database}.sql")
       end
-      response = @client.put_file('/database.txt', file)
+      response = @client.put_file("/#{@database}.sql", file)
       puts "uploaded:"
       puts "Updated at: #{Time.now}"
       sleep(9)
