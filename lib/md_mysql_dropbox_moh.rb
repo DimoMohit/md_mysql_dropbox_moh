@@ -2,18 +2,13 @@
 require 'mysql'
 require 'dropbox_sdk'
 class BackupData
-  attr_accessor :url,:database,:user,:pass
-  def initialize
+  def start
   	print "Database :"
   	@database = gets.chomp 
   	print "User Name :"
   	@user = gets.chomp 
   	print "Password :"
   	@pass = gets.chomp
-  	@data = ""
-  	@con = Mysql.new @url, @user, @pass, @database
-  	puts @con.get_server_info
-  	
   	#APP_KEY = zwqkeyv3e3fo410
     #APP_SECRET = 9i74k9tdemp8vng
 
