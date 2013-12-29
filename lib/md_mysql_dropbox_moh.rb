@@ -41,18 +41,20 @@ class BackupData
     end
   end
   def update_dropbox
+    sleep(5)
     j=0
     while j<2   
       puts "linked account:", 
-      filename = "#{@database}.sql"
-      puts filename
-      file = open(filename)
-      if @client.search('/', filename, file_limit=1000, include_deleted=false).length >0
-        @client.file_delete(filename)
+      @filename = Dir.pwd+"/"+"#{@database}.sql"
+      puts @filename
+      if @client.search('/', "#{@database}.sql", file_limit=1000, include_deleted=false).length >0
+        @client.file_delete("#{@database}.sql")
         puts "Deleted Last File"
       end
+      file = open(@filename)
+      puts File.expand_path(__FILE__)
       response = @client.put_file("/#{@database}.sql", file)
-      puts "uploaded:"
+      puts "Uploaded:"
       puts "Updated at: #{Time.now}"
       sleep(9)
       j=j+1
@@ -64,6 +66,7 @@ class BackupData
     t2=Thread.new{update_dropbox()}
     t1.join
     t2.join
+    File.delete(@filename)
     puts "End at #{Time.now}"
     @con.close if @con
   end
