@@ -42,11 +42,12 @@ class BackupData
   	  n_rows = result.num_rows
   	  n_rows.times do
           table= result.fetch_row.join("\s")
-          @data= "#{@data} Table : #{table}"
+          @data= "#{@data} Table : #{table} Fields: "
           res = @con.query("DESC #{table}")
           res.each_hash do |row|
-             @data =@data + row['Field']             
+             @data =@data +" " + row['Field']             
           end 
+          @data =@data +" Data : "
           res = @con.query("SELECT * FROM #{table}")
           in_rows = res.num_rows
           in_rows.times do
