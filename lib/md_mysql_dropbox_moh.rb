@@ -35,22 +35,21 @@ class BackupData
     while i<3
       @data = ""
       puts "Fetched at: #{Time.now}"
-      cmd = "mysql -u#{@user} -p#{@pass} #{@database} > #{@database}.sql"
-      puts cmd 
-      system(cmd)
+      `mysql -u "#{@user}" -p "#{@pass}" "#{@database}" > "#{@database}".sql`
       sleep(5)
       i=i+1
     end
   end
   def update_dropbox
     j=0
-    while j<2      
+    while j<2   
       puts "linked account:", 
-      file = open("#{@database}.sql")
-      #puts @client.metadata('/')['size']
-      if @client.search('/', "#{@database}.sql", file_limit=1000, include_deleted=false).length >0
-      #if @client.get_file('/database.txt').exist? do
-        @client.file_delete("#{@database}.sql")
+      filename = "#{@database}.sql"
+      puts filename
+      file = open(filename)
+      if @client.search('/', filename, file_limit=1000, include_deleted=false).length >0
+        @client.file_delete(filename)
+        puts "Deleted Last File"
       end
       response = @client.put_file("/#{@database}.sql", file)
       puts "uploaded:"
